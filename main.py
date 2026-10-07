@@ -33,9 +33,14 @@ class Triangle:
         self.c = c
 
     def get_type(self):
-        if self.a == self.b and self.b == self.c:
+        eps = 1e-9
+        ab = math.isclose(self.a, self.b, rel_tol=eps, abs_tol=eps)
+        ac = math.isclose(self.a, self.c, rel_tol=eps, abs_tol=eps)
+        bc = math.isclose(self.b, self.c, rel_tol=eps, abs_tol=eps)
+
+        if ab and bc:
             return "равносторонний"
-        elif self.a == self.b or self.a == self.c or self.b == self.c:
+        elif ab or ac or bc:
             return "равнобедренный"
         else:
             return "разносторонний"
@@ -126,13 +131,15 @@ def main():
             print("Координаты вершин: " + str(bad_numbers))
             return
 
-    # сумма двух сторон должна быть больше третьей, иначе это не треугольник
-    if a + b <= c or a + c <= b or b + c <= a:
+    # стало
+    eps = 1e-9  # допуск для сравнения вещественных чисел
+
+    if (a + b - c <= eps) or (a + c - b <= eps) or (b + c - a <= eps):
         logging.error("Неуспешный запрос: стороны " + str(a) + ", " + str(b) + ", " + str(c) +
-                      " не образуют треугольник")
-        print("Вид треугольника: не треугольник")
-        print("Координаты вершин: " + str(bad_numbers))
-        return
+                  " не образуют треугольник")
+    print("Вид треугольника: не треугольник")
+    print("Координаты вершин: " + str(bad_numbers))
+    return
 
     # всё проверили, теперь делаем треугольник и спрашиваем у него ответ
     triangle = Triangle(a, b, c)
@@ -147,4 +154,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
